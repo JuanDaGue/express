@@ -1,0 +1,36 @@
+# Node.js
+node_modules
+npm-debug.log
+
+# Logs
+logs
+*.log
+logs/**/*
+
+# Environment variables
+.env
+
+# npm package lock file
+package-lock.json
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor-specific
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# TypeScript
+*.tsbuildinfo
+
+# Build directories
+build
+dist
+
+# Optional npm cache directory
+.npm
