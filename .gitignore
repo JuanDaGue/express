@@ -34,3 +34,6 @@ dist
 
 # Optional npm cache directory
 .npm
+
+#data folder
+postgress_data
