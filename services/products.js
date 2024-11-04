@@ -30,9 +30,9 @@ class ProductServices {
       return newProduct;
     }
     async find (){
-      return new Promise((resolve, reject) => {
-        setTimeout(()=>{resolve( this.products);},2000)
-      })
+      const query= 'SELECT * FROM tasks';
+      const rta = await this.pool.query(query)
+      return rta.rows
 
     }
     async findOne(id) {
