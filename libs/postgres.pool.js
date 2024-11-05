@@ -8,7 +8,7 @@ const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${
 
 const pool = new Pool({ connectionString: URI})
 
-console.log('User:', USER, PASSWORD,'port', config.dbPort)
-console.log('pool:',pool)
+// console.log('User:', USER, PASSWORD,'port', config.dbPort)
+// console.log('pool:',pool)
 
 module.exports = pool;
