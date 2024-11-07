@@ -1,5 +1,6 @@
 # Editor configuration, see https://editorconfig.org
 # $ docker-compose --env-file .env up -d postgres
+# docker-compose exec postgres bash
 root = true
 
 [*]

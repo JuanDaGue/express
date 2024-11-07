@@ -1,20 +1,21 @@
-const {Sequelize} = require('sequelize');
+const { Sequelize } = require('sequelize');
+const { config } = require('./../config/config');
+const setupModels = require('./../db/models');
 
-const {config} = require('./../config/config')
-const setupModels = require('./../db/models')
+// Encode credentials to handle special characters
+const USER = encodeURIComponent(config.dbUser);
+const PASSWORD = encodeURIComponent(config.dbPassword);
 
-const USER= encodeURIComponent(config.dbUser)
-const PASSWORD= encodeURIComponent(config.dbPassword)
-
-const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`
-
+// Construct URI with encoded user and password
+const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
 
 const sequelize = new Sequelize(URI, {
   dialect: 'postgres',
-  logging:true,
-})
+  logging: console.log, // Use console.log to avoid deprecation warning
+  dialectOptions: { connectTimeout: 120000 } // 60 seconds timeout
+});
 
+// Initialize models with sequelize
 setupModels(sequelize);
-sequelize.sync();
 
-module.exports = sequelize
+module.exports = sequelize;
