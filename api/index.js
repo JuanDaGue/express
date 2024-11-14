@@ -21,10 +21,10 @@ const options={
   }
 }
 app.use(cors());
-app.get('/',(req,res)=>{
+app.get('/api',(req,res)=>{
   res.send('Hi, you are in my express server')
 });
-app.get('/new-path',checkApiKey,(req,res)=>{
+app.get('/api/new-path',checkApiKey,(req,res)=>{
   res.send('helo, new path')
 });
 
