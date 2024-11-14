@@ -8,8 +8,12 @@ const config = {
   dbHost:  process.env.DB_HOST,
   dbName:  process.env.DB_NAME,
   dbPort:  process.env.DB_PORT,
+  apiKey: process.env.API_KEY,
+  jwtSecret: process.env.JWT_SECRET,
   dialect: 'postgres',
   logging: false,
+  rEmail: process.env.EMAIL,
+  emailPassword: process.env.EMAIL_PASSWORD,
 }
 
 module.exports = { config };
