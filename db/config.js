@@ -9,11 +9,14 @@ console.log(URI)
 
 module.exports = {
   development: {
-    url: URI,
+    url: config.dbUrl,
     dialect: 'postgres',
   },
   production: {
-    url: URI,
+    url: config.dbUrl,
     dialect: 'postgres',
+    ssl:{
+      rejectUnauthorized: false
+    },
   }
 }
