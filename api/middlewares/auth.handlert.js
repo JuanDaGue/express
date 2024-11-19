@@ -24,11 +24,12 @@ function checkAdminRole(req, res, next) {
 function checkRoles(...roles) {
   return(req, res, next)=>{
     const user = req.user;
+    if (!user) { return next(boom.unauthorized('User not authenticated'));}
     console.log(roles)
     if(roles.includes(user.role)){
       next()
     }else{
-      next(boom.unauthorised())
+      next(boom.unauthorised('User does not have the required role'))
     }
   }
 }

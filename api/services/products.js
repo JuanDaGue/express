@@ -5,81 +5,66 @@ const {models} = require('../libs/sequelize');
 const {Op } = require('sequelize');
 
 class ProductServices {
+  constructor() {}
 
-    constructor(){
-      this.products=[];
-      this.generate();
-    }
-    async generate (){
-      const limit= 100
-      for (let i=0; i<limit; i++) {
-        this.products.push({
-          id: faker.string.uuid(),
-          name: faker.commerce.productName(),
-          price: parseInt(faker.commerce.price(),10),
-          image: faker.image.url(),
-        })
-      }
-    }
-    async create (data){
-      const newProduct = await models.Product.create(data)
-      return newProduct;
-    }
-    async find (query){
-      const options={
-        include: ['category'],
-        where:{}
-      }
-      const {limit, offset} = query;
+  async create(data) {
+    const newProduct = await models.Product.create(data);
+    return newProduct;
+  }
 
-      if(limit && offset){
-        options.limit=limit;
-        options.offset=offset
-      }
-      const { price }= query;
-      if(price){
-        options.where.price = price;
-      }
+  async find(query) {
+    const options = {
+      include: ['category'], // Ensure category is defined in associations
+      where: {},
+    };
 
-      const { price_min, price_max }= query;
-      if(price_min && price_max){
-        options.where.price ={
-          [Op.gte]: price_min,
-          [Op.lte]: price_max,
-        };
-      }
-      const products = await models.Product.findAll(options)
-      return products
+    const { limit, offset, price, price_min, price_max } = query;
 
+    // Pagination
+    if (limit && offset) {
+      options.limit = parseInt(limit, 10);
+      options.offset = parseInt(offset, 10);
     }
-    async findOne(id) {
-      const product = await models.Product.findByPk(id);
-      if (!product) {
-        throw boom.notFound('product not found');
-      }
-      if (product.isBlock) {
-        throw boom.conflict('product is block');
-      }
-      return product;
-    }
-    async update (id,changes){
-      const index = this.products.findIndex(elem => elem.id === id);
-      if(index===-1){
-        throw boom.notFound('Product no found');
-      }
-      const product=this.products[index]
-      this.products[index]={...product,...changes};
 
-      return this.products[index];
+    // Exact price filtering
+    if (price) {
+      options.where.price = price;
     }
-    async delete (id){
-      const index = this.products.findIndex(elem => elem.id === id);
-      if(index===-1){
-        throw boom.notFound('Product no found');
-      }
-      this.products.splice(index, 1);
-      return {id};
+
+    // Price range filtering
+    if (price_min && price_max) {
+      options.where.price = {
+        [Op.gte]: price_min,
+        [Op.lte]: price_max,
+      };
     }
+
+    const products = await models.Product.findAll(options);
+    return products;
+  }
+
+  async findOne(id) {
+    const product = await models.Product.findByPk(id);
+    if (!product) {
+      throw boom.notFound('Product not found');
+    }
+    if (product.isBlock) {
+      throw boom.conflict('Product is blocked');
+    }
+    return product;
+  }
+
+  async update(id, changes) {
+    const product = await this.findOne(id); // Reuse `findOne` to check if the product exists
+    const updatedProduct = await product.update(changes); // Update directly on the Sequelize instance
+    return updatedProduct;
+  }
+
+  async delete(id) {
+    const product = await this.findOne(id); // Reuse `findOne` to check if the product exists
+    await product.destroy(); // Delete directly using the Sequelize instance
+    return { id };
+  }
 }
 
-module.exports= ProductServices
+module.exports = ProductServices;

@@ -50,20 +50,25 @@ router.post('/',
     }
 })
 
-router.put('/:id',async (req,res)=>{
-  if(id === 999){
-    res.status(404).json({
-      message:'no founnd'
-    })
+router.put('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updatedProductSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params; // Ensure id is properly extracted
+      const body = req.body; // Extract body from the request
+      const updatedProduct = await service.update(id, body); // Call the update method
+      res.json({
+        message: 'Updated successfully',
+        data: updatedProduct,
+        id,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-  const {id} = req.params;
-  const body = await req.body
-  res.json({
-    message:'Updated',
-    data: body,
-    id,
-  });
-})
+);
+
 
 router.patch('/:id',
   validatorHandler(getProductSchema,'params'),
@@ -86,19 +91,19 @@ router.patch('/:id',
 
 
 router.delete('/:id',
-  validatorHandler(getProductSchema,'params'),
-  async (req,res,next)=>{
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
     try {
-      const {id} = req.params;
-      await service.delete(id)
+      const { id } = req.params; // Ensure id is properly extracted
+      const deletedProduct = await service.delete(id); // Call the delete method
       res.json({
-        message:'Delete',
-        id,
+        message: 'Deleted successfully',
+        id: deletedProduct.id, // Return the id of the deleted product
       });
     } catch (error) {
-      next(error)
+      next(error);
     }
-
-})
+  }
+);
 
 module.exports = router
